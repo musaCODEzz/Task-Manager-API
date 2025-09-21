@@ -63,3 +63,4 @@ async function deleteTask(id) {
 
 // Load tasks initially
 fetchTasks();
+
