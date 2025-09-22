@@ -37,7 +37,8 @@ pipeline {
                     def imageName = "task-manager-api"
                     def version = "v1.0.0"
 
-                    sh "docker build -t ${imageName}:${version} ."
+                    // Explicitly call docker using full path
+                    sh "/usr/local/bin/docker build -t ${imageName}:${version} ."
                 }
             }
         }
