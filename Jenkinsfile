@@ -1,7 +1,8 @@
 pipeline {
     agent any
+
     tools {
-        nodejs "node-24"   // must match the name you gave in Jenkins
+        nodejs "node-24"   // must match the name configured in Jenkins global tools
     }
 
     stages {
@@ -26,6 +27,18 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'npm run build'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // name your app and version
+                    def imageName = "task-manager-api"
+                    def version = "v1.0.0"
+
+                    sh "docker build -t ${imageName}:${version} ."
+                }
             }
         }
     }
