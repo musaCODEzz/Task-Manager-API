@@ -9,7 +9,7 @@ const PORT = 3000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // serve frontend files
+app.use(express.static("static")); // serve frontend files
 
 // Database
 const db = new sqlite3.Database("./tasks.db", (err) => {
