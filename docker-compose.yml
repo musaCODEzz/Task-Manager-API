@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app                       # bind mount source for live edits
+      - /app/node_modules             # anonymous volume so host node_modules don't override
+      - ./tasks.db:/app/tasks.db      # persist sqlite DB on host
+    environment:
+      - NODE_ENV=development
+    command: node index.js             # uses nodemon (see package.json step)

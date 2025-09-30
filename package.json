@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "test": "mocha",
     "build": "echo \"Build step running...\""
   },
@@ -21,6 +23,7 @@
     "jsdom": "^27.0.0",
     "mocha": "^11.7.2",
     "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.10",
     "sinon": "^21.0.0",
     "supertest": "^7.1.4"
   }
