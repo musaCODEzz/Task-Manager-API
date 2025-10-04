@@ -2,3 +2,5 @@ node_modules/
 database.sqlite
 .env
 .db
+# Ignore SQLite DB file
+tasks.db
