@@ -1,39 +1,37 @@
-# Dockerfile (production-ready) — Alpine + build deps in deps stage
-# --- deps stage ---
-FROM node:20-alpine AS deps
+# Dockerfile (production)
+# --- deps stage: build native modules and install production deps ---
+FROM node:22-alpine AS deps
 WORKDIR /app
 
-# install build tools needed for node-gyp and sqlite3; symlink python
-RUN apk add --no-cache \
-      python3 \
-      make \
-      g++ \
-      build-base \
-      sqlite-dev \
-      ca-certificates \
-  && ln -sf /usr/bin/python3 /usr/bin/python
+# Install only essential build tools
+RUN apk add --no-cache python3 sqlite-dev ca-certificates \
+    && ln -sf /usr/bin/python3 /usr/bin/python
 
+# Copy package files (cache this layer) and install production deps
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 # --- final runtime stage ---
-FROM node:20-alpine
+FROM node:22-alpine AS runtime
 WORKDIR /app
 
-# create a non-root user for security
+# Create non-root user for security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# copy built node_modules
+# Copy node_modules (native binaries already built) from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
-# copy app source
+# Copy application source
 COPY . .
 
-# create data folder for sqlite and set permissions
-RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data /app
+# Ensure a writable directory for DB and set ownership
+RUN mkdir -p /app && chown -R appuser:appgroup /app
 
+# Switch to non-root user
 USER appuser
+
 ENV NODE_ENV=production
 EXPOSE 3000
 
+# Start the app
 CMD ["node", "index.js"]

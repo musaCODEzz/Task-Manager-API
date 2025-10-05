@@ -9,4 +9,4 @@ services:
       - ./tasks.db:/app/tasks.db      # persist sqlite DB on host
     environment:
       - NODE_ENV=development
-    command: node index.js             # uses nodemon (see package.json step)
+    command: node index.js             
