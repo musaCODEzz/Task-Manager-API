@@ -1,12 +1,28 @@
 services:
-  app:
-    build: .
+  task-manager-api-prod:
+    container_name: task-manager-api-prod
+    build:
+      context: .
+      target: prod
     ports:
       - "3000:3000"
     volumes:
-      - ./:/app                       # bind mount source for live edits
-      - /app/node_modules             # anonymous volume so host node_modules don't override
-      - ./tasks.db:/app/tasks.db      # persist sqlite DB on host
+      - ./db:/app/db:rw      # Mount db folder for SQLite
+    environment:
+      - NODE_ENV=production
+      - DB_PATH=/app/db/tasks.db
+
+  task-manager-api-dev:
+    container_name: task-manager-api-dev
+    build:
+      context: .
+      target: deps
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - ./db:/app/db:rw      # Mount db folder for dev
     environment:
       - NODE_ENV=development
-    command: node index.js             
+      - DB_PATH=/app/db/tasks.db
